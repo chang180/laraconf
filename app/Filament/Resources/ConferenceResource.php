@@ -24,9 +24,10 @@ class ConferenceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Conference Name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('description')
+                Forms\Components\RichEditor::make('description')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('start_date')
@@ -49,7 +50,9 @@ class ConferenceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Conference Name')
                     ->searchable(),
+                //  textarea
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')
