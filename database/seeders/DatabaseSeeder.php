@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         }
 
         Conference::factory(10)->create();
-        Venue::factory(10)->create();
+        Venue::factory(200)->create();
         Talk::factory(10)->create();
     }
 }
