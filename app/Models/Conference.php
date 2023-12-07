@@ -6,6 +6,8 @@ use App\Models\Talk;
 use App\Enums\Region;
 use App\Models\Venue;
 use App\Models\Speaker;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
@@ -74,7 +76,13 @@ class Conference extends Model
                     Fieldset::make('Status')
                         ->columns(1)
                         ->schema([
-                            TextInput::make('status')
+                            Select::make('status')
+                                ->options([
+                                    'draft' => 'Draft',
+                                    'published' => 'Published',
+                                    'archived' => 'Archived',
+                                    'canceled' => 'Canceled',
+                                ])
                                 ->required(),
                             Toggle::make('is_published')
                                 ->required(),
@@ -100,6 +108,21 @@ class Conference extends Model
                             return $query->where('region', $get('region'));
                         }),
                 ]),
+            Actions::make([
+                Action::make('star')
+                ->label('Fill with Factory Data')
+                ->icon('heroicon-m-star')
+                ->visible(function(string $operation) {
+                    if($operation !== 'create') return false;
+                    if(!app()->environment('local')) return false;
+                    return true;
+                }
+                )
+                ->action(function ($livewire) {
+                    $data = Conference::factory()->make()->toArray();
+                    $livewire->form->fill($data);
+                }),
+            ])
         ];
     }
 }
