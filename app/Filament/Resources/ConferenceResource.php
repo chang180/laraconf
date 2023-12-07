@@ -2,23 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
 use App\Enums\Region;
-use App\Models\Venue;
-use Filament\Forms\Form;
-use App\Models\Conference;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\DateTimePicker;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ConferenceResource\Pages;
 use App\Filament\Resources\ConferenceResource\RelationManagers;
+use App\Filament\Resources\SpeakerResource;
+use App\Models\Conference;
+use App\Models\Speaker;
+use App\Models\Venue;
+use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ConferenceResource extends Resource
 {
@@ -46,6 +49,7 @@ class ConferenceResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('region')
                     ->live()
+
                     ->enum(Region::class)
                     ->options(Region::class),
                 Forms\Components\Select::make('venue_id')
@@ -56,6 +60,10 @@ class ConferenceResource extends Resource
                     ->relationship('venue', 'name', modifyQueryUsing: function (Builder $query, Forms\Get $get) {
                         return $query->where('region', $get('region'));
                     }),
+                Forms\Components\CheckboxList::make('speakers')
+                    ->relationship('speakers', 'name')
+                    ->options(Speaker::pluck('name', 'id'))
+                    ->required(),
             ]);
     }
 
