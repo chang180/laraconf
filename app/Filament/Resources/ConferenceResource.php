@@ -32,39 +32,7 @@ class ConferenceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Conference Name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\RichEditor::make('description')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('start_date')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('end_date')
-                    ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Select::make('region')
-                    ->live()
-
-                    ->enum(Region::class)
-                    ->options(Region::class),
-                Forms\Components\Select::make('venue_id')
-                    ->searchable()
-                    ->preload()
-                    ->editOptionForm(Venue::getForm())
-                    ->createOptionForm(Venue::getForm())
-                    ->relationship('venue', 'name', modifyQueryUsing: function (Builder $query, Forms\Get $get) {
-                        return $query->where('region', $get('region'));
-                    }),
-                Forms\Components\CheckboxList::make('speakers')
-                    ->relationship('speakers', 'name')
-                    ->options(Speaker::pluck('name', 'id'))
-                    ->required(),
-            ]);
+            ->schema(Conference::getForm());
     }
 
     public static function table(Table $table): Table
